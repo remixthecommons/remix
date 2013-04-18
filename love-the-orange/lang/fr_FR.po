@@ -1,0 +1,382 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Arjuna X 1.3.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-03-24 15:11+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: sebos\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#@ branfordmagazine
+#: archive.php:31
+msgid "Blog Archives"
+msgstr "Archives du blog"
+
+#@ branfordmagazine
+#: comments.php:23
+msgid "No comments"
+msgstr "Pas de commentaires"
+
+#@ branfordmagazine
+#: comments.php:10
+msgid "This post is password protected. Enter the password to view comments."
+msgstr "Cet article est protégé par mot de passe. Entrez le mot de passe pour afficher les commentaires."
+
+#@ branfordmagazine
+#: comments.php:59
+msgid "Comments are closed."
+msgstr "Les commentaires sont fermés."
+
+#@ branfordmagazine
+#: comments.php:80
+msgid "Log out of this account"
+msgstr "Se déconnecter de ce compte"
+
+#@ branfordmagazine
+#: comments.php:42
+msgid "Your comment is awaiting moderation."
+msgstr "Votre commentaire est en attente de modération."
+
+#@ branfordmagazine
+#: page.php:11
+#: single.php:18
+#: tmpl_artist-page-DEV.php:72
+#: tmpl_featured-page.php:40
+msgid "Pages"
+msgstr "Pages"
+
+#@ branfordmagazine
+#: comments.php:32
+msgid "on"
+msgstr "le"
+
+#@ branfordmagazine
+#: tmpl_featured-page.php:21
+#: ui.tabs.php:6
+#: ui.tabs.php:52
+msgid "Recent Posts"
+msgstr "Articles récents"
+
+#@ branfordmagazine
+#: archive.php:8
+#, php-format
+msgid "%s"
+msgstr "%s"
+
+#@ branfordmagazine
+#: archive.php:11
+msgid "Posts Tagged"
+msgstr ""
+
+#@ branfordmagazine
+#: archive.php:16
+#: archive.php:18
+#: archive.php:20
+#, php-format
+msgid "Archive for %s"
+msgstr "Archive pour %s"
+
+#@ branfordmagazine
+#: archive.php:16
+#: comments.php:34
+#: search.php:13
+msgid "F jS, Y"
+msgstr "j F Y"
+
+#@ branfordmagazine
+#: archive.php:18
+msgid "F Y"
+msgstr ""
+
+#@ branfordmagazine
+#: archive.php:23
+#: search.php:7
+msgid "Search Results"
+msgstr "Résultats de la recherche"
+
+#@ branfordmagazine
+#: archive.php:27
+msgid "All entries by this author"
+msgstr "Articles de cet auteur"
+
+#@ branfordmagazine
+#: archive.php:36
+#: archive.php:74
+#: search.php:24
+msgid "Previous entries"
+msgstr "Articles précédents"
+
+#@ branfordmagazine
+#: archive.php:39
+#: archive.php:77
+#: search.php:25
+msgid "Next entries"
+msgstr "Articles suivants"
+
+#@ branfordmagazine
+#: archive.php:44
+#: search.php:12
+#: tmpl_3-column-page.php:26
+#: tmpl_3-column-page.php:73
+#: tmpl_3-column-page.php:120
+#: ui.tabs.php:33
+#: ui.tabs.php:40
+msgid "Permanent Link to"
+msgstr "Lien permanent vers"
+
+#@ branfordmagazine
+#: archive.php:48
+#: single.php:10
+msgid "M jS, Y"
+msgstr "j/m/Y"
+
+#@ branfordmagazine
+#: archive.php:53
+#: single.php:10
+msgid "Category:"
+msgstr "Catégorie :"
+
+#@ branfordmagazine
+#: archive.php:63
+msgid "Posted in"
+msgstr "Mots-clefs :"
+
+#@ branfordmagazine
+#: archive.php:66
+msgid "No Comments &#187;"
+msgstr "Aucun commentaire"
+
+#@ branfordmagazine
+#: archive.php:66
+msgid "1 Comment &#187;"
+msgstr "1 commentaire"
+
+#@ branfordmagazine
+#: archive.php:66
+msgid "% comment"
+msgid_plural "% comments"
+msgstr[0] "% commentaire"
+msgstr[1] "% commentaires"
+
+#@ branfordmagazine
+#: archive.php:82
+msgid "Not Found"
+msgstr "Non trouvé"
+
+#@ branfordmagazine
+#: archives.php:13
+msgid "Archives by Month:"
+msgstr "Archives par mois :"
+
+#@ branfordmagazine
+#: archives.php:18
+msgid "Archives by Subject:"
+msgstr "Archives par sujet :"
+
+#@ branfordmagazine
+#: comments.php:3
+msgid "Please do not load this page directly. Thanks!"
+msgstr "Merci de ne pas ouvrir cette page directement."
+
+#@ branfordmagazine
+#: comments.php:23
+msgid "One comment"
+msgstr "Un commentaire"
+
+#@ branfordmagazine
+#: comments.php:23
+msgid "comments"
+msgstr "commentaires"
+
+#@ branfordmagazine
+#: comments.php:35
+msgid "at"
+msgstr "à"
+
+#@ branfordmagazine
+#: comments.php:69
+msgid "You must be"
+msgstr "Vous devez être"
+
+#@ branfordmagazine
+#: comments.php:71
+msgid "logged in"
+msgstr "enregistrée"
+
+#@ branfordmagazine
+#: comments.php:73
+msgid "to post a comment."
+msgstr "pour soumettre un commentaire."
+
+#@ branfordmagazine
+#: comments.php:79
+msgid "Logged in as"
+msgstr "Session ouverte en tant que"
+
+#@ branfordmagazine
+#: comments.php:81
+msgid "Logout &raquo;"
+msgstr "Se déconnecter"
+
+#@ branfordmagazine
+#: comments.php:87
+msgid "Name"
+msgstr "Nom"
+
+#@ branfordmagazine
+#: comments.php:88
+#: comments.php:95
+msgid "(required)"
+msgstr "(requis)"
+
+#@ branfordmagazine
+#: comments.php:94
+msgid "Mail (will not be published)"
+msgstr "Courriel (ne sera pas publié)"
+
+#@ branfordmagazine
+#: comments.php:101
+msgid "Website"
+msgstr "Site Internet"
+
+#@ branfordmagazine
+#: comments.php:109
+msgid "Submit Comment"
+msgstr "Soumettre un commentaire"
+
+#@ branfordmagazine
+#: links.php:11
+msgid "Links:"
+msgstr "Liens :"
+
+#@ branfordmagazine
+#: page.php:9
+#: single.php:16
+#: tmpl_artist-page-DEV.php:71
+#: tmpl_featured-page.php:39
+msgid "Read the rest of this page"
+msgstr "Lire la suite de cette page"
+
+#@ branfordmagazine
+#: page.php:11
+#: single.php:18
+#: tmpl_artist-page-DEV.php:72
+#: tmpl_featured-page.php:40
+msgid "number"
+msgstr "nombre"
+
+#@ branfordmagazine
+#: search.php:30
+msgid "No posts found. Try a different search?"
+msgstr "Aucun article trouvé, essayer d'autres critères de recherche."
+
+#@ branfordmagazine
+#: sidebar.php:14
+msgid "More from this category"
+msgstr "Plus d'articles dans cette catégorie"
+
+#@ branfordmagazine
+#: sidebar.php:24
+msgid "View all posts filed under"
+msgstr "Voir tous les articles sous"
+
+#@ branfordmagazine
+#: sidebar.php:24
+msgid "Archive for"
+msgstr "Archive pour"
+
+#@ branfordmagazine
+#: sidebar.php:49
+msgid "Browse Categories"
+msgstr "Voir les catégories"
+
+#@ branfordmagazine
+#: sidebar.php:55
+msgid "Ads &amp; Sponsors"
+msgstr ""
+
+#@ branfordmagazine
+#: sidebar.php:59
+msgid "Browse Archives"
+msgstr "Voir les archives"
+
+#@ branfordmagazine
+#: sidebar.php:63
+msgid "Stay informed"
+msgstr "Rester informée"
+
+#@ branfordmagazine
+#: sidebar.php:70
+msgid "Who writes"
+msgstr "Qui écrit"
+
+#@ branfordmagazine
+#: archive.php:50
+#: single.php:10
+msgid "By"
+msgstr "Par"
+
+#@ branfordmagazine
+#: single.php:26
+msgid "Sorry, no posts matched your criteria."
+msgstr "Désolé, aucun article ne correspond à vos critères de recherche."
+
+#@ branfordmagazine
+#: tmpl_3-column-page.php:37
+#: tmpl_3-column-page.php:84
+#: tmpl_3-column-page.php:131
+msgid "Recently postet"
+msgstr "Diffusé récemment"
+
+#@ branfordmagazine
+#: comments.php:25
+#: comments.php:26
+msgid "Leave a comment"
+msgstr "Écrire un commentaire"
+
+#@ branfordmagazine
+#: comments.php:65
+msgid "Leave Comment"
+msgstr "Écrire un commentaire"
+
+#@ branfordmagazine
+#: searchform.php:3
+msgid "Search"
+msgstr "Recherche"
+
+#@ branfordmagazine
+#: ui.tabs.php:41
+msgid "[continue reading...]"
+msgstr "[lire la suite...]"
+
+#@ branfordmagazine
+#: ui.tabs.php:5
+msgid "Lead Article"
+msgstr "Article principal"
+
+#@ branfordmagazine
+#: single.php:21
+msgid "Tags:"
+msgstr "Mots-clefs :"
+
+#@ branfordmagazine
+#: header.php:83
+msgid "Home"
+msgstr "Accueil"
+
+#@ branfordmagazine
+#: 404.php:5
+msgid "Nothing found - try again."
+msgstr "Rien trouvé - essayer à nouveau."
+
