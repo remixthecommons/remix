@@ -30,5 +30,7 @@ if ( function_exists('register_sidebar') )
         'after_title' => '</h2>',
     ));
 
+add_action('hess-type_add_form', 'qtrans_modifyTermFormFor');
+add_action('hess-type_edit_form', 'qtrans_modifyTermFormFor');
 
 ?>
