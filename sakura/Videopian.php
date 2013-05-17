@@ -1,771 +1,767 @@
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=windows-1252"></head><body><code><span style="color: #000000">
-<span style="color: #0000BB">&lt;?php
-<br>
-<br></span><span style="color: #FF8000">/**
-<br>&nbsp;*&nbsp;Videopian
-<br>&nbsp;*&nbsp;get&nbsp;everything&nbsp;about&nbsp;a&nbsp;video
-<br>&nbsp;*&nbsp;
-<br>&nbsp;*&nbsp;-------------------------------------------------------------------
-<br>&nbsp;*&nbsp;WTF&nbsp;PUBLIC&nbsp;LICENSE
-<br>&nbsp;*&nbsp;
-<br>&nbsp;*&nbsp;Copyright&nbsp;(C)&nbsp;2009&nbsp;Upian.com
-<br>&nbsp;*&nbsp;211&nbsp;rue&nbsp;Saint-Maur&nbsp;75010&nbsp;Paris,&nbsp;France
-<br>&nbsp;*&nbsp;
-<br>&nbsp;*&nbsp;Everyone&nbsp;is&nbsp;permitted&nbsp;to&nbsp;copy&nbsp;and&nbsp;distribute&nbsp;verbatim&nbsp;or&nbsp;modified
-<br>&nbsp;*&nbsp;copies&nbsp;of&nbsp;this&nbsp;license&nbsp;document,&nbsp;and&nbsp;changing&nbsp;it&nbsp;is&nbsp;allowed&nbsp;as&nbsp;long
-<br>&nbsp;*&nbsp;as&nbsp;the&nbsp;name&nbsp;is&nbsp;changed.
-<br>&nbsp;*&nbsp;
-<br>&nbsp;*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DO&nbsp;WHAT&nbsp;THE&nbsp;FUCK&nbsp;YOU&nbsp;WANT&nbsp;TO&nbsp;PUBLIC&nbsp;LICENSE
-<br>&nbsp;*&nbsp;&nbsp;TERMS&nbsp;AND&nbsp;CONDITIONS&nbsp;FOR&nbsp;COPYING,&nbsp;DISTRIBUTION&nbsp;AND&nbsp;MODIFICATION
-<br>&nbsp;*&nbsp;
-<br>&nbsp;*&nbsp;0.&nbsp;You&nbsp;just&nbsp;DO&nbsp;WHAT&nbsp;THE&nbsp;FUCK&nbsp;YOU&nbsp;WANT&nbsp;TO.
-<br>&nbsp;*&nbsp;
-<br>&nbsp;*&nbsp;-------------------------------------------------------------------
-<br>&nbsp;*&nbsp;
-<br>&nbsp;*&nbsp;@author&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Denis&nbsp;Hovart&nbsp;&lt;denis@upian.com&gt;
-<br>&nbsp;*&nbsp;@author&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hans&nbsp;Lemuet&nbsp;&nbsp;&nbsp;&nbsp;&lt;hans@upian.com&gt;
-<br>&nbsp;*&nbsp;@version&nbsp;&nbsp;&nbsp;&nbsp;0.1.1
-<br>&nbsp;*/
-<br>
-<br></span><span style="color: #007700">class&nbsp;</span><span style="color: #0000BB">Videopian&nbsp;</span><span style="color: #007700">{
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;================================================================================
-<br>&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Specify&nbsp;here&nbsp;the&nbsp;API&nbsp;keys&nbsp;for&nbsp;the&nbsp;services&nbsp;you&nbsp;want&nbsp;to&nbsp;use.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;You'll&nbsp;need&nbsp;to&nbsp;request&nbsp;one&nbsp;for&nbsp;each.
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">const&nbsp;</span><span style="color: #0000BB">IMEEM_API_KEY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;</span><span style="color: #0000BB">IMEEM_API_SECRET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;</span><span style="color: #0000BB">VEOH_API_KEY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;</span><span style="color: #0000BB">FLICKR_API_KEY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;</span><span style="color: #0000BB">SEVENLOAD_API_KEY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;</span><span style="color: #0000BB">VIDDLER_API_KEY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;</span><span style="color: #0000BB">REVVER_LOGIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;const&nbsp;</span><span style="color: #0000BB">REVVER_PASSWORD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;================================================================================
-<br>&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Do&nbsp;not&nbsp;change&nbsp;anything&nbsp;under&nbsp;this&nbsp;line
-<br>&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">private&nbsp;static&nbsp;</span><span style="color: #0000BB">$url</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;static&nbsp;</span><span style="color: #0000BB">$service</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;static&nbsp;</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;static&nbsp;</span><span style="color: #0000BB">$video</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;================================================================================
-<br>&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Process&nbsp;the&nbsp;URL&nbsp;to&nbsp;extract&nbsp;the&nbsp;service&nbsp;and&nbsp;the&nbsp;video&nbsp;id
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">private&nbsp;static&nbsp;function&nbsp;</span><span style="color: #0000BB">processUrl</span><span style="color: #007700">()&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">preg_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">'#\#.*$#'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$url</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!</span><span style="color: #0000BB">preg_match</span><span style="color: #007700">(</span><span style="color: #DD0000">'#http://#'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$url</span><span style="color: #007700">))&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://'&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$url</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$services_regexp&nbsp;</span><span style="color: #007700">=&nbsp;array(
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#blip\.tv.*/file/([0-9]*)#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'blip'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#dailymotion\.com.*/video/([^_]*)#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'dailymotion'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#flickr\.com.*/photos/[a-zA-Z0-9]*/([^/]*)#'&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'flickr'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#video\.google\..{0,5}/.*[\?&amp;]docid=([^&amp;]*)#i'&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'googlevideo'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#imeem\.com/.*/video/([^/]*)#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'imeem'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#metacafe\.com/watch/(.[^/]*)#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'metacafe'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#myspace\.com/.*[\?&amp;]videoid=(.*)#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'myspace'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#revver\.com/video/([^/]*)#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'revver'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#sevenload.com/.*/(videos|episodes)/([^-]*)#i'&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'sevenload'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#veoh\.com/.*/([^?&amp;]*)/?#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'veoh'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#vimeo\.com\/([0-9]*)[\/\?]?#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'vimeo'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'#youtube\..{0,5}/.*[\?&amp;]v=([^&amp;]*)#i'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'youtube'&nbsp;</span><span style="color: #FF8000">#&nbsp;TODO:&nbsp;add&nbsp;the&nbsp;support&nbsp;of&nbsp;http://www.youtube.com/v/SToOccPytl8&nbsp;style&nbsp;URLs
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach&nbsp;(</span><span style="color: #0000BB">$services_regexp&nbsp;</span><span style="color: #007700">as&nbsp;</span><span style="color: #0000BB">$pattern&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #0000BB">$service</span><span style="color: #007700">)&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">preg_match</span><span style="color: #007700">(</span><span style="color: #0000BB">$pattern</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$url</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$matches</span><span style="color: #007700">))&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$service&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$service</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(</span><span style="color: #0000BB">$service&nbsp;</span><span style="color: #007700">==&nbsp;</span><span style="color: #DD0000">'sevenload'</span><span style="color: #007700">)&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$matches</span><span style="color: #007700">[</span><span style="color: #0000BB">2</span><span style="color: #007700">];
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$matches</span><span style="color: #007700">[</span><span style="color: #0000BB">1</span><span style="color: #007700">];
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;================================================================================
-<br>&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fetch&nbsp;and&nbsp;return&nbsp;the&nbsp;video&nbsp;data
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">public&nbsp;static&nbsp;function&nbsp;</span><span style="color: #0000BB">get</span><span style="color: #007700">(</span><span style="color: #0000BB">$url</span><span style="color: #007700">)&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$url</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">processUrl</span><span style="color: #007700">();
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$url</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">site&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$service</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$service</span><span style="color: #007700">)&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'blip'&nbsp;</span><span style="color: #007700">:
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"http://blip.tv/file/"</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">.</span><span style="color: #DD0000">"?skin=rss"</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/title'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$title_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/blip:puredescription'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$description_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:keywords'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">explode</span><span style="color: #007700">(</span><span style="color: #DD0000">',&nbsp;'</span><span style="color: #007700">,</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$tags_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/blip:runtime'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$duration_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/blip:user'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$author_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author_safe_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/blip:safeusername'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://'</span><span style="color: #007700">.</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$author_safe_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]).</span><span style="color: #DD0000">'.blip.tv'</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/blip:datestamp'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_published_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/blip:smallThumbnail'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:thumbnail/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$player_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/blip:embedUrl'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$player_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$player_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;FLV&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content[@type="video/x-flv"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/x-flv'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$flv_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;MOV&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$mov_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content[@type="video/quicktime"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/quicktime'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$mov_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$mov_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'dailymotion'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://www.dailymotion.com/rss/video/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/title'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$title_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/itunes:summary'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$description_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/itunes:keywords'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">explode</span><span style="color: #007700">(</span><span style="color: #DD0000">',&nbsp;'</span><span style="color: #007700">,</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$tags_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content/@duration'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$duration_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/dm:author'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$author_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://www.dailymotion.com/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/pubDate'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_published_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://www.dailymotion.com/thumbnail/320x240/video/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">320</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">240</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://www.dailymotion.com/swf/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;FLV&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content[@type="video/x-flv"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/x-flv'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$flv_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;MP4&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;TODO:&nbsp;Récupération&nbsp;de&nbsp;l'URL&nbsp;du&nbsp;fichier&nbsp;mp4
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//$mp4_query&nbsp;=&nbsp;$xml-&gt;xpath('/rss/channel/item/media:group/media:content[@type="video/mp4"]/@url');
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//self::$mp4&nbsp;=&nbsp;$mp4_query&nbsp;?&nbsp;$mp4_query[0]&nbsp;:&nbsp;'';
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'flickr'</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;API&nbsp;key&nbsp;check
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">if&nbsp;(</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">FLICKR_API_KEY&nbsp;</span><span style="color: #007700">==&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">)&nbsp;throw&nbsp;new&nbsp;</span><span style="color: #0000BB">Exception</span><span style="color: #007700">(</span><span style="color: #DD0000">'You&nbsp;need&nbsp;to&nbsp;request&nbsp;an&nbsp;api&nbsp;key&nbsp;in&nbsp;order&nbsp;to&nbsp;grab&nbsp;video&nbsp;information&nbsp;from&nbsp;Flickr.'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&amp;api_key='&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">FLICKR_API_KEY&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'&amp;photo_id='&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Media&nbsp;type&nbsp;check
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$media_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/@media'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(</span><span style="color: #0000BB">$media_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]&nbsp;!=&nbsp;</span><span style="color: #DD0000">'video'</span><span style="color: #007700">)&nbsp;throw&nbsp;new&nbsp;</span><span style="color: #0000BB">Exception</span><span style="color: #007700">(</span><span style="color: #DD0000">'The&nbsp;media&nbsp;you&nbsp;are&nbsp;trying&nbsp;to&nbsp;get&nbsp;from&nbsp;Flickr&nbsp;is&nbsp;not&nbsp;a&nbsp;video.'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/title'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$title_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/description'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;empty(</span><span style="color: #0000BB">$description_query</span><span style="color: #007700">)&nbsp;?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$description_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/tags/tag'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tags&nbsp;</span><span style="color: #007700">=&nbsp;array();
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach&nbsp;(</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">as&nbsp;</span><span style="color: #0000BB">$tag_query</span><span style="color: #007700">)&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tag&nbsp;</span><span style="color: #007700">=&nbsp;(array)&nbsp;</span><span style="color: #0000BB">$tag_query</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tags</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$tag</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">];
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">$tags&nbsp;</span><span style="color: #007700">:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/video/@duration'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;empty(</span><span style="color: #0000BB">$duration_query</span><span style="color: #007700">)&nbsp;?&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$duration_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/owner/@username'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$author_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author_id_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/owner/@nsid'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$author_id_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #DD0000">'http://www.flickr.com/photos/'</span><span style="color: #007700">.</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$author_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/dates/@posted'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">date</span><span style="color: #007700">(</span><span style="color: #0000BB">DATE_RSS</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_published_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_updated_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo/dates/@lastupdate'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_updated_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">date</span><span style="color: #007700">(</span><span style="color: #0000BB">DATE_RSS</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_updated_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/photo'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]-&gt;</span><span style="color: #0000BB">attributes</span><span style="color: #007700">();
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://farm'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'farm'</span><span style="color: #007700">].</span><span style="color: #DD0000">'.static.flickr.com/'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'server'</span><span style="color: #007700">].</span><span style="color: #DD0000">'/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">.</span><span style="color: #DD0000">'_'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'secret'</span><span style="color: #007700">].</span><span style="color: #DD0000">'_m.jpg'</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://farm'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'farm'</span><span style="color: #007700">].</span><span style="color: #DD0000">'.static.flickr.com/'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'server'</span><span style="color: #007700">].</span><span style="color: #DD0000">'/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">.</span><span style="color: #DD0000">'_'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'secret'</span><span style="color: #007700">].</span><span style="color: #DD0000">'_t.jpg'</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://farm'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'farm'</span><span style="color: #007700">].</span><span style="color: #DD0000">'.static.flickr.com/'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'server'</span><span style="color: #007700">].</span><span style="color: #DD0000">'/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">.</span><span style="color: #DD0000">'_'</span><span style="color: #007700">.</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'secret'</span><span style="color: #007700">].</span><span style="color: #DD0000">'_s.jpg'</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">75</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">75</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;for&nbsp;files&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_sizes_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&amp;api_key='&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">FLICKR_API_KEY&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'&amp;photo_id='&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml_sizes&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_sizes_data</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;&amp;&nbsp;files&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$files_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml_sizes</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/sizes/size[@media="video"]'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach&nbsp;(</span><span style="color: #0000BB">$files_url_query&nbsp;</span><span style="color: #007700">as&nbsp;</span><span style="color: #0000BB">$p</span><span style="color: #007700">)&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$p</span><span style="color: #007700">[</span><span style="color: #DD0000">'label'</span><span style="color: #007700">]))&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'Video&nbsp;Player'</span><span style="color: #007700">:&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$files_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$p</span><span style="color: #007700">[</span><span style="color: #DD0000">'source'</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'Site&nbsp;MP4'</span><span style="color: #007700">:&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/mp4'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$files_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$p</span><span style="color: #007700">[</span><span style="color: #DD0000">'source'</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'googlevideo'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://video.google.com/videofeed?docid='</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">utf8_encode</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">)));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">registerXPathNamespace</span><span style="color: #007700">(</span><span style="color: #DD0000">'media'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'http://search.yahoo.com/mrss/'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/title'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$title_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:description'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$description_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content/@duration'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$duration_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;TODO:&nbsp;WTF?
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;$author_query&nbsp;=&nbsp;$xml-&gt;xpath('/rss/channel/item/author');
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;self::$video-&gt;author&nbsp;=&nbsp;$author_query&nbsp;?&nbsp;strval($author_query[0])&nbsp;:&nbsp;false;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/pubDate'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_published_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:thumbnail'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]-&gt;</span><span style="color: #0000BB">attributes</span><span style="color: #007700">();
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">preg_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">'#&amp;amp;#'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'&amp;'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'url'</span><span style="color: #007700">]));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'width'</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'height'</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$player_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content[@type="application/x-shockwave-flash"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$player_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$player_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;AVI&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$avi_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content[@type="video/x-msvideo"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/x-msvideo'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$avi_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">preg_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">'#&amp;amp;#'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'&amp;'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$avi_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;FLV&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content[@type="video/x-flv"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/x-flv'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$flv_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;MP4&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$mp4_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:group/media:content[@type="video/mp4"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/mp4'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$mp4_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">preg_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">'#&amp;amp;#'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'&amp;'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$mp4_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'imeem'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;</span><span style="color: #0000BB">Exception</span><span style="color: #007700">(</span><span style="color: #DD0000">'Imeem&nbsp;is&nbsp;not&nbsp;yet&nbsp;supported.'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Support&nbsp;thread&nbsp;opened&nbsp;here:&nbsp;http://www.imeem.com/groups/zJqqiqve/forums/-uuCzu0F/kx-e6b3U/method_searchbyurl/
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'metacafe'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"http://www.metacafe.com/api/item/"</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/title'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$title_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:description'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$description_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:keywords'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">explode</span><span style="color: #007700">(</span><span style="color: #DD0000">','</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$tags_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])))&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/author'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$author_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"http://www.metacafe.com/"</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/pubDate'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_published_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:thumbnail/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$player_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:content[@type="application/x-shockwave-flash"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$player_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$player_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Files&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files&nbsp;</span><span style="color: #007700">=&nbsp;array();
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'myspace'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"http://mediaservices.myspace.com/services/rss.ashx?type=video&amp;videoID="</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/title'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$title_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/pubDate'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_published_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:thumbnail/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnails_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"http://lads.myspace.com/videos/vplayer.swf?m="&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;FLV&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rss/channel/item/media:content[@type="video/x-flv"]/@url'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/x-flv'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$flv_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'revver'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Account&nbsp;check
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;if&nbsp;(self::REVVER_LOGIN&nbsp;==&nbsp;''&nbsp;||&nbsp;self::REVVER_PASSWORD&nbsp;==&nbsp;'')&nbsp;throw&nbsp;new&nbsp;Exception('Please&nbsp;specify&nbsp;your&nbsp;Revver&nbsp;account&nbsp;information.');
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">throw&nbsp;new&nbsp;</span><span style="color: #0000BB">Exception</span><span style="color: #007700">(</span><span style="color: #DD0000">'Revver&nbsp;is&nbsp;not&nbsp;yet&nbsp;supported.'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'veoh'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;API&nbsp;key&nbsp;check
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">if&nbsp;(</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">VEOH_API_KEY&nbsp;</span><span style="color: #007700">==&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">)&nbsp;throw&nbsp;new&nbsp;</span><span style="color: #0000BB">Exception</span><span style="color: #007700">(</span><span style="color: #DD0000">'You&nbsp;need&nbsp;to&nbsp;request&nbsp;an&nbsp;API&nbsp;key&nbsp;in&nbsp;order&nbsp;to&nbsp;grab&nbsp;video&nbsp;information&nbsp;from&nbsp;Veoh.'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"http://www.veoh.com/rest/v2/execute.xml?method=veoh.video.findByPermalink&amp;permalink="&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">"&amp;apiKey="&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">VEOH_API_KEY</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/@title'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$title_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/@description'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$description_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/tagList/tag/@tagName'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach(</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">as&nbsp;</span><span style="color: #0000BB">$tag</span><span style="color: #007700">)&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$tag</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/@length'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$duration_raw&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$duration_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">preg_match</span><span style="color: #007700">(</span><span style="color: #DD0000">'#(([0-9]{0,2})&nbsp;hr&nbsp;)?([0-9]{0,2})&nbsp;min&nbsp;([0-9]{0,2})&nbsp;sec#'</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$duration_raw</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$matches</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$hours&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$matches</span><span style="color: #007700">[</span><span style="color: #0000BB">2</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$minutes&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$matches</span><span style="color: #007700">[</span><span style="color: #0000BB">3</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$seconds&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$matches</span><span style="color: #007700">[</span><span style="color: #0000BB">4</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;(</span><span style="color: #0000BB">$hours&nbsp;</span><span style="color: #007700">*&nbsp;</span><span style="color: #0000BB">60&nbsp;</span><span style="color: #007700">*&nbsp;</span><span style="color: #0000BB">60</span><span style="color: #007700">)&nbsp;+&nbsp;(</span><span style="color: #0000BB">$minutes&nbsp;</span><span style="color: #007700">*&nbsp;</span><span style="color: #0000BB">60</span><span style="color: #007700">)&nbsp;+&nbsp;</span><span style="color: #0000BB">$seconds</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/@username'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$author_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"http://www.veoh.com/users/"</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/@dateAdded'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_published_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query_medres&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/@medResImage'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnails_query_medres</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnails_query_highres&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/@highResImage'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnails_query_highres</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">"http://www.veoh.com/veohplayer.swf?permalinkId="&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;FLV&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/rsp/videoList/video/@previewUrl'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files</span><span style="color: #007700">[</span><span style="color: #DD0000">'video/x-flv'</span><span style="color: #007700">]&nbsp;=&nbsp;</span><span style="color: #0000BB">$flv_url_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$flv_url_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'viddler'</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;API&nbsp;key&nbsp;check
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;if&nbsp;(self::VIDDLER_API_KEY&nbsp;==&nbsp;'')&nbsp;throw&nbsp;new&nbsp;Exception('You&nbsp;need&nbsp;to&nbsp;request&nbsp;an&nbsp;api&nbsp;key&nbsp;in&nbsp;order&nbsp;to&nbsp;grab&nbsp;video&nbsp;information&nbsp;from&nbsp;Viddler.');
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">throw&nbsp;new&nbsp;</span><span style="color: #0000BB">Exception</span><span style="color: #007700">(</span><span style="color: #DD0000">'Viddler&nbsp;is&nbsp;not&nbsp;yet&nbsp;supported.'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'vimeo'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;PHP&nbsp;serialized&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$url_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://vimeo.com/api/clip/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">.</span><span style="color: #DD0000">'/php'</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Data
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">unserialize</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$url_data</span><span style="color: #007700">));
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'title'</span><span style="color: #007700">];
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'caption'</span><span style="color: #007700">];
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">explode</span><span style="color: #007700">(</span><span style="color: #DD0000">',&nbsp;'</span><span style="color: #007700">,</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'tags'</span><span style="color: #007700">]);
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'duration'</span><span style="color: #007700">];
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'user_name'</span><span style="color: #007700">];
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'user_url'</span><span style="color: #007700">];
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'upload_date'</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">null</span><span style="color: #007700">;
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'thumbnail_small'</span><span style="color: #007700">];
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'thumbnail_medium'</span><span style="color: #007700">];
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$data</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">][</span><span style="color: #DD0000">'thumbnail_large'</span><span style="color: #007700">];
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height</span><span style="color: #007700">)&nbsp;=&nbsp;</span><span style="color: #0000BB">getimagesize</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://vimeo.com/moogaloop.swf?clip_id='</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://www.vimeo.com/moogaloop/load/clip:'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://vimeo.com/api/clip/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">.</span><span style="color: #DD0000">'/xml'</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">),&nbsp;</span><span style="color: #0000BB">LIBXML_NOCDATA</span><span style="color: #007700">);
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Files&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files&nbsp;</span><span style="color: #007700">=&nbsp;array();
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'sevenload'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;API&nbsp;key&nbsp;check
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;if&nbsp;(self::SEVENLOAD_API_KEY&nbsp;==&nbsp;'')&nbsp;throw&nbsp;new&nbsp;Exception('You&nbsp;need&nbsp;to&nbsp;request&nbsp;an&nbsp;api&nbsp;key&nbsp;in&nbsp;order&nbsp;to&nbsp;grab&nbsp;video&nbsp;information&nbsp;from&nbsp;Sevenload');
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">throw&nbsp;new&nbsp;</span><span style="color: #0000BB">Exception</span><span style="color: #007700">(</span><span style="color: #DD0000">'Sevenload&nbsp;is&nbsp;not&nbsp;yet&nbsp;supported.'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">case&nbsp;</span><span style="color: #DD0000">'youtube'&nbsp;</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML&nbsp;data&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$file_data&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://gdata.youtube.com/feeds/api/videos/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xml_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;XML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">SimpleXMLElement</span><span style="color: #007700">(</span><span style="color: #0000BB">file_get_contents</span><span style="color: #007700">(</span><span style="color: #0000BB">$file_data</span><span style="color: #007700">));
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">registerXPathNamespace</span><span style="color: #007700">(</span><span style="color: #DD0000">'a'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'http://www.w3.org/2005/Atom'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">registerXPathNamespace</span><span style="color: #007700">(</span><span style="color: #DD0000">'media'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'http://search.yahoo.com/mrss/'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">registerXPathNamespace</span><span style="color: #007700">(</span><span style="color: #DD0000">'yt'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">'http://gdata.youtube.com/schemas/2007'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Title
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/a:entry/a:title'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">title&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$title_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$title_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Description
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/a:entry/a:content'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">description&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$description_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$description_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">]))&nbsp;:&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Tags
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/a:entry/media:group/media:keywords'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">tags&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$tags_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">explode</span><span style="color: #007700">(</span><span style="color: #DD0000">',&nbsp;'</span><span style="color: #007700">,</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">trim</span><span style="color: #007700">(</span><span style="color: #0000BB">$tags_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])))&nbsp;:&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/a:entry/media:group/yt:duration/@seconds'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">duration&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$duration_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$duration_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Author&nbsp;&amp;&nbsp;author&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/a:entry/a:author/a:name'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$author_query&nbsp;</span><span style="color: #007700">?&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$author_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://www.youtube.com/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">author</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Publication&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/a:entry/a:published'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_published&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_published_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_published_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Last&nbsp;update&nbsp;date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$date_updated_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/a:entry/a:updated'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">date_updated&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$date_updated_query&nbsp;</span><span style="color: #007700">?&nbsp;new&nbsp;</span><span style="color: #0000BB">DateTime</span><span style="color: #007700">(</span><span style="color: #0000BB">$date_updated_query</span><span style="color: #007700">[</span><span style="color: #0000BB">0</span><span style="color: #007700">])&nbsp;:&nbsp;</span><span style="color: #0000BB">false</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Thumbnails
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$xml</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">xpath</span><span style="color: #007700">(</span><span style="color: #DD0000">'/a:entry/media:group/media:thumbnail'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach&nbsp;(</span><span style="color: #0000BB">$thumbnail_query&nbsp;</span><span style="color: #007700">as&nbsp;</span><span style="color: #0000BB">$t</span><span style="color: #007700">)&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail&nbsp;</span><span style="color: #007700">=&nbsp;new&nbsp;</span><span style="color: #0000BB">stdClass</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail_query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$t</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">attributes</span><span style="color: #007700">();
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">strval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'url'</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">width&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'width'</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">height&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">intval</span><span style="color: #007700">(</span><span style="color: #0000BB">$thumbnail_query</span><span style="color: #007700">[</span><span style="color: #DD0000">'height'</span><span style="color: #007700">]);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">thumbnails</span><span style="color: #007700">[]&nbsp;=&nbsp;</span><span style="color: #0000BB">$thumbnail</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Player&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">player_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://www.youtube.com/v/'</span><span style="color: #007700">.</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$id</span><span style="color: #007700">;
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;Files&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">-&gt;</span><span style="color: #0000BB">files&nbsp;</span><span style="color: #007700">=&nbsp;array();
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;FLV&nbsp;file&nbsp;URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;TODO:&nbsp;Récupération&nbsp;de&nbsp;l'URL&nbsp;du&nbsp;fichier&nbsp;flv
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;self::$video-&gt;flv_url&nbsp;=&nbsp;'http://www.youtube.com/get_video.php?video_id='.self::$id;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;--------------------------------------------------------------------------------
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">default&nbsp;:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;</span><span style="color: #0000BB">Exception</span><span style="color: #007700">(</span><span style="color: #DD0000">'Unable&nbsp;to&nbsp;get&nbsp;the&nbsp;video&nbsp;data.&nbsp;Please&nbsp;make&nbsp;sure&nbsp;the&nbsp;service&nbsp;you’re&nbsp;trying&nbsp;to&nbsp;use&nbsp;is&nbsp;supported&nbsp;by&nbsp;Videopian.'</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">$video</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FF8000">#&nbsp;================================================================================
-<br>&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Build&nbsp;the&nbsp;query&nbsp;for&nbsp;Imeem&nbsp;API
-<br>&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Documentation&nbsp;:&nbsp;http://www.imeem.com/developers/documentation/ws/wsoverview/wsappauth
-<br>&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">private&nbsp;function&nbsp;</span><span style="color: #0000BB">buildImeemQuery</span><span style="color: #007700">(</span><span style="color: #0000BB">$method</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$param</span><span style="color: #007700">)&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$base_url&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #DD0000">'http://www.api.imeem.com/api/xml/'</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch(</span><span style="color: #0000BB">$method</span><span style="color: #007700">)&nbsp;{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'mediaGetInfo'</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$args&nbsp;</span><span style="color: #007700">=&nbsp;array(
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'apiKey'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">IMEEM_API_KEY</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'mediaIds'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #0000BB">$param</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'version'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'1.0'
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;</span><span style="color: #DD0000">'mediaSearch'</span><span style="color: #007700">:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$args&nbsp;</span><span style="color: #007700">=&nbsp;array(
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'apiKey'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">IMEEM_API_KEY</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'mediaType'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'video'</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'query'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #0000BB">$param</span><span style="color: #007700">,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #DD0000">'version'&nbsp;</span><span style="color: #007700">=&gt;&nbsp;</span><span style="color: #DD0000">'1.0'
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$httpquery&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">http_build_query</span><span style="color: #007700">(</span><span style="color: #0000BB">$args</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$sig&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">md5</span><span style="color: #007700">(</span><span style="color: #0000BB">$method&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">preg_replace</span><span style="color: #007700">(</span><span style="color: #DD0000">'#&amp;amp;#'</span><span style="color: #007700">,&nbsp;</span><span style="color: #DD0000">''</span><span style="color: #007700">,&nbsp;</span><span style="color: #0000BB">$httpquery</span><span style="color: #007700">)&nbsp;.&nbsp;</span><span style="color: #0000BB">self</span><span style="color: #007700">::</span><span style="color: #0000BB">IMEEM_API_SECRET</span><span style="color: #007700">);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #0000BB">$query&nbsp;</span><span style="color: #007700">=&nbsp;</span><span style="color: #0000BB">$base_url&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$method&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'?'&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$httpquery&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #DD0000">'&amp;amp;sig='&nbsp;</span><span style="color: #007700">.&nbsp;</span><span style="color: #0000BB">$sig</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;</span><span style="color: #0000BB">$query</span><span style="color: #007700">;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>}
-<br></span><span style="color: #0000BB">?&gt;</span>
-</span>
-</code></body></html>
+<?php
+
+/**
+ * Videopian
+ * get everything about a video
+ * 
+ * -------------------------------------------------------------------
+ * WTF PUBLIC LICENSE
+ * 
+ * Copyright (C) 2009 Upian.com
+ * 211 rue Saint-Maur 75010 Paris, France
+ * 
+ * Everyone is permitted to copy and distribute verbatim or modified
+ * copies of this license document, and changing it is allowed as long
+ * as the name is changed.
+ * 
+ *			DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+ *  TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+ * 
+ * 0. You just DO WHAT THE FUCK YOU WANT TO.
+ * 
+ * -------------------------------------------------------------------
+ * 
+ * @author 	Denis Hovart <denis@upian.com>
+ * @author 	Hans Lemuet	<hans@upian.com>
+ * @version	0.1.1
+ */
+
+class Videopian {
+
+	# ================================================================================
+	# Specify here the API keys for the services you want to use.
+	# You'll need to request one for each.
+
+	const IMEEM_API_KEY			= '';
+	const IMEEM_API_SECRET		= '';
+	const VEOH_API_KEY			= '';
+	const FLICKR_API_KEY		= '';
+	const SEVENLOAD_API_KEY		= '';
+	const VIDDLER_API_KEY		= '';
+	const REVVER_LOGIN			= '';
+	const REVVER_PASSWORD		= '';
+	
+	
+	# ================================================================================
+	# Do not change anything under this line
+	
+	private static $url;
+	private static $service;
+	private static $id;
+	private static $video;
+	
+	# ================================================================================
+	# Process the URL to extract the service and the video id
+	private static function processUrl() {
+		
+		self::$url = preg_replace('#\#.*$#', '', trim(self::$url));
+		
+		if (!preg_match('#http://#', self::$url)) self::$url = 'http://' . self::$url;
+		
+		$services_regexp = array(
+			'#blip\.tv.*/file/([0-9]*)#i'					=> 'blip',
+			'#dailymotion\.com.*/video/([^_]*)#i'			=> 'dailymotion',
+			'#flickr\.com.*/photos/[a-zA-Z0-9]*/([^/]*)#'	=> 'flickr',
+			'#video\.google\..{0,5}/.*[\?&]docid=([^&]*)#i'	=> 'googlevideo',
+			'#imeem\.com/.*/video/([^/]*)#i'				=> 'imeem',
+			'#metacafe\.com/watch/(.[^/]*)#i'				=> 'metacafe',
+			'#myspace\.com/.*[\?&]videoid=(.*)#i'			=> 'myspace',
+			'#revver\.com/video/([^/]*)#i'					=> 'revver',
+			'#sevenload.com/.*/(videos|episodes)/([^-]*)#i'	=> 'sevenload',
+			'#veoh\.com/.*/([^?&]*)/?#i'					=> 'veoh',
+			'#vimeo\.com\/([0-9]*)[\/\?]?#i'				=> 'vimeo',
+			'#youtube\..{0,5}/.*[\?&]v=([^&]*)#i'			=> 'youtube' # TODO: add the support of http://www.youtube.com/v/SToOccPytl8 style URLs
+		);
+		
+		foreach ($services_regexp as $pattern => $service) {
+			if (preg_match($pattern, self::$url, $matches)) {
+				self::$service = $service;
+				if ($service == 'sevenload') self::$id = $matches[2];
+				else self::$id = $matches[1];
+			}
+		}
+	}
+	
+	# ================================================================================
+	# Fetch and return the video data
+	public static function get($url) {
+		
+		self::$url = $url;
+		
+		self::processUrl();
+		
+		self::$video = new stdClass;
+		self::$video->url = self::$url;
+		self::$video->site = self::$service;
+		
+		switch (self::$service) {
+			
+			# --------------------------------------------------------------------------------
+			case 'blip' :
+
+			# XML data URL
+			$file_data = "http://blip.tv/file/".self::$id."?skin=rss";
+			self::$video->xml_url = $file_data;
+			
+			# XML
+			$xml = new SimpleXMLElement(file_get_contents($file_data));
+			
+			# Title
+			$title_query = $xml->xpath('/rss/channel/item/title');
+			self::$video->title = $title_query ? strval($title_query[0]) : null;
+			
+			# Description
+			$description_query = $xml->xpath('/rss/channel/item/blip:puredescription');
+			self::$video->description = $description_query ? strval(trim($description_query[0])) : null;
+			
+			# Tags
+			$tags_query = $xml->xpath('/rss/channel/item/media:keywords');
+			self::$video->tags = $tags_query ? explode(', ',strval(trim($tags_query[0]))) : null;
+			
+			# Duration
+			$duration_query = $xml->xpath('/rss/channel/item/blip:runtime');
+			self::$video->duration = $duration_query ? intval($duration_query[0]) : null;
+			
+			# Author & author URL
+			$author_query = $xml->xpath('/rss/channel/item/blip:user');
+			self::$video->author = $author_query ? strval($author_query[0]) : null;
+			$author_safe_query = $xml->xpath('/rss/channel/item/blip:safeusername');
+			self::$video->author_url = 'http://'.strval($author_safe_query[0]).'.blip.tv';
+			
+			# Publication date
+			$date_published_query = $xml->xpath('/rss/channel/item/blip:datestamp');
+			self::$video->date_published = $date_published_query ? new DateTime($date_published_query[0]) : null;
+			
+			# Last update date
+			self::$video->date_updated = null;
+
+			# Thumbnails
+			$thumbnails_query = $xml->xpath('/rss/channel/item/blip:smallThumbnail');
+			$thumbnail = new stdClass;
+			$thumbnail->url = strval($thumbnails_query[0]);
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			$thumbnails_query = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
+			$thumbnail = new stdClass;
+			$thumbnail->url = strval($thumbnails_query[0]);
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			
+			# Player URL
+			$player_url_query = $xml->xpath('/rss/channel/item/blip:embedUrl');
+			self::$video->player_url = $player_url_query ? strval($player_url_query[0]) : null;
+			
+			# FLV file URL
+			$flv_url_query = $xml->xpath('/rss/channel/item/media:group/media:content[@type="video/x-flv"]/@url');
+			self::$video->files['video/x-flv'] = $flv_url_query ? strval($flv_url_query[0]) : null;
+			
+			# MOV file URL
+			$mov_url_query = $xml->xpath('/rss/channel/item/media:group/media:content[@type="video/quicktime"]/@url');
+			self::$video->files['video/quicktime'] = $mov_url_query ? strval($mov_url_query[0]) : null;
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'dailymotion' :
+			
+			# XML data URL
+			$file_data = 'http://www.dailymotion.com/rss/video/'.self::$id;
+			self::$video->xml_url = $file_data;
+			
+			# XML
+			$xml = new SimpleXMLElement(file_get_contents($file_data));
+			
+			# Title
+			$title_query = $xml->xpath('/rss/channel/item/title');
+			self::$video->title = $title_query ? strval($title_query[0]) : null;
+			
+			# Description
+			$description_query = $xml->xpath('/rss/channel/item/itunes:summary');
+			self::$video->description = $description_query ? strval(trim($description_query[0])) : null;
+			
+			# Tags
+			$tags_query = $xml->xpath('/rss/channel/item/itunes:keywords');
+			self::$video->tags = $tags_query ? explode(', ',strval(trim($tags_query[0]))) : null;
+			
+			# Duration
+			$duration_query = $xml->xpath('/rss/channel/item/media:group/media:content/@duration');
+			self::$video->duration = $duration_query ? intval($duration_query[0]) : null;
+			
+			# Author & author URL
+			$author_query = $xml->xpath('/rss/channel/item/dm:author');
+			self::$video->author = $author_query ? strval($author_query[0]) : null;
+			self::$video->author_url = 'http://www.dailymotion.com/'.self::$video->author;
+			
+			# Publication date
+			$date_published_query = $xml->xpath('/rss/channel/item/pubDate');
+			self::$video->date_published = $date_published_query ? new DateTime($date_published_query[0]) : null;
+			
+			# Last update date
+			self::$video->date_updated = null;
+			
+			# Thumbnails
+			$thumbnail = new stdClass;
+			$thumbnail->url = 'http://www.dailymotion.com/thumbnail/320x240/video/'.self::$id;
+			$thumbnail->width = 320;
+			$thumbnail->height = 240;
+			self::$video->thumbnails[] = $thumbnail;
+			
+			# Player URL
+			self::$video->player_url = 'http://www.dailymotion.com/swf/'.self::$id;
+			
+			# FLV file URL
+			$flv_url_query = $xml->xpath('/rss/channel/item/media:group/media:content[@type="video/x-flv"]/@url');
+			self::$video->files['video/x-flv'] = $flv_url_query ? strval($flv_url_query[0]) : null;
+			
+			# MP4 file URL
+			// TODO: Récupération de l'URL du fichier mp4
+			//$mp4_query = $xml->xpath('/rss/channel/item/media:group/media:content[@type="video/mp4"]/@url');
+			//self::$mp4 = $mp4_query ? $mp4_query[0] : '';
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'flickr':
+			
+			# API key check
+			if (self::FLICKR_API_KEY == '') throw new Exception('You need to request an api key in order to grab video information from Flickr.');
+			
+			# XML data URL
+			$file_data = 'http://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=' . self::FLICKR_API_KEY . '&photo_id=' . self::$id;
+			self::$video->xml_url = $file_data;
+			
+			# XML
+			$xml = new SimpleXMLElement(file_get_contents($file_data));
+			
+			# Media type check
+			$media_query = $xml->xpath('/rsp/photo/@media');
+			if($media_query[0] != 'video') throw new Exception('The media you are trying to get from Flickr is not a video.');
+			
+			# Title
+			$title_query = $xml->xpath('/rsp/photo/title');
+			self::$video->title = $title_query ? strval($title_query[0]) : null;
+			
+			# Description
+			$description_query = $xml->xpath('/rsp/photo/description');
+			self::$video->description = empty($description_query) ? strval(trim($description_query[0])) : null;
+			
+			# Tags
+			$tags_query = $xml->xpath('/rsp/photo/tags/tag');
+			$tags = array();
+			foreach ($tags_query as $tag_query) {
+				$tag = (array) $tag_query;
+				$tags[] = $tag[0];
+			}
+			self::$video->tags = $tags_query ? $tags : null;
+			
+			# Duration
+			$duration_query = $xml->xpath('/rsp/photo/video/@duration');
+			self::$video->duration = empty($duration_query) ? intval($duration_query[0]) : null;
+			
+			# Author & author URL
+			$author_query = $xml->xpath('/rsp/photo/owner/@username');
+			self::$video->author = $author_query ? strval($author_query[0]) : null;
+			$author_id_query = $xml->xpath('/rsp/photo/owner/@nsid');
+			self::$video->author_url = $author_id_query ? 'http://www.flickr.com/photos/'.strval($author_query[0]) : null;
+			
+			# Publication date
+			$date_published_query = $xml->xpath('/rsp/photo/dates/@posted');
+			self::$video->date_published = $date_published_query ? new DateTime(date(DATE_RSS, intval($date_published_query[0]))) : null;
+			
+			# Last update date
+			$date_updated_query = $xml->xpath('/rsp/photo/dates/@lastupdate');
+			self::$video->date_updated = $date_updated_query ? new DateTime(date(DATE_RSS, intval($date_updated_query[0]))) : null;
+			
+			# Thumbnails
+			$thumbnails_query = $xml->xpath('/rsp/photo');
+			$thumbnails_query = $thumbnails_query[0]->attributes();
+			$thumbnail = new stdClass;
+			$thumbnail->url = 'http://farm'.$thumbnails_query['farm'].'.static.flickr.com/'.$thumbnails_query['server'].'/'.self::$id.'_'.$thumbnails_query['secret'].'_m.jpg';
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			$thumbnail = new stdClass;
+			$thumbnail->url = 'http://farm'.$thumbnails_query['farm'].'.static.flickr.com/'.$thumbnails_query['server'].'/'.self::$id.'_'.$thumbnails_query['secret'].'_t.jpg';
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			$thumbnail = new stdClass;
+			$thumbnail->url = 'http://farm'.$thumbnails_query['farm'].'.static.flickr.com/'.$thumbnails_query['server'].'/'.self::$id.'_'.$thumbnails_query['secret'].'_s.jpg';
+			$thumbnail->width = 75;
+			$thumbnail->height = 75;
+			self::$video->thumbnails[] = $thumbnail;
+			
+			# XML for files data URL
+			$file_sizes_data = 'http://api.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=' . self::FLICKR_API_KEY . '&photo_id=' . self::$id;
+			
+			# XML
+			$xml_sizes = new SimpleXMLElement(file_get_contents($file_sizes_data));
+			
+			# Player & files URL
+			$files_url_query = $xml_sizes->xpath('/rsp/sizes/size[@media="video"]');
+			foreach ($files_url_query as $p) {
+				switch (strval($p['label'])) {
+					case 'Video Player': self::$video->player_url = $files_url_query ? strval($p['source']) : null; break;
+					case 'Site MP4': self::$video->files['video/mp4'] = $files_url_query ? strval($p['source']) : null; break;
+				}
+			}
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'googlevideo' :
+			
+			# XML data URL
+			$file_data = 'http://video.google.com/videofeed?docid='.self::$id;
+			self::$video->xml_url = $file_data;
+			
+			# XML
+			$xml = new SimpleXMLElement(utf8_encode(file_get_contents($file_data)));
+			$xml->registerXPathNamespace('media', 'http://search.yahoo.com/mrss/');
+			
+			# Title
+			$title_query = $xml->xpath('/rss/channel/item/title');
+			self::$video->title = $title_query ? strval($title_query[0]) : null;
+			
+			# Description
+			$description_query = $xml->xpath('/rss/channel/item/media:group/media:description');
+			self::$video->description = $description_query ? strval(trim($description_query[0])) : null;
+			
+			# Tags
+			self::$video->tags = null;
+			
+			# Duration
+			$duration_query = $xml->xpath('/rss/channel/item/media:group/media:content/@duration');
+			self::$video->duration = $duration_query ? intval($duration_query[0]) : null;
+			
+			# Author & author URL
+			// TODO: WTF?
+			// $author_query = $xml->xpath('/rss/channel/item/author');
+			// self::$video->author = $author_query ? strval($author_query[0]) : false;
+			self::$video->author = null;
+			self::$video->author_url = null;
+			
+			# Publication date
+			$date_published_query = $xml->xpath('/rss/channel/item/pubDate');
+			self::$video->date_published = $date_published_query ? new DateTime($date_published_query[0]) : null;
+			
+			# Last update date
+			self::$video->date_updated = null;
+			
+			# Thumbnails
+			$thumbnails_query = $xml->xpath('/rss/channel/item/media:group/media:thumbnail');
+			$thumbnails_query = $thumbnails_query[0]->attributes();
+			$thumbnail = new stdClass;
+			$thumbnail->url = strval(preg_replace('#&amp;#', '&', $thumbnails_query['url']));
+			$thumbnail->width = intval($thumbnails_query['width']);
+			$thumbnail->height = intval($thumbnails_query['height']);
+			self::$video->thumbnails[] = $thumbnail;
+			
+			# Player URL
+			$player_url_query = $xml->xpath('/rss/channel/item/media:group/media:content[@type="application/x-shockwave-flash"]/@url');
+			self::$video->player_url = $player_url_query ? strval($player_url_query[0]) : null;
+			
+			# AVI file URL
+			$avi_url_query = $xml->xpath('/rss/channel/item/media:group/media:content[@type="video/x-msvideo"]/@url');
+			self::$video->files['video/x-msvideo'] = $avi_url_query ? preg_replace('#&amp;#', '&', $avi_url_query[0]) : null;
+			
+			# FLV file URL
+			$flv_url_query = $xml->xpath('/rss/channel/item/media:group/media:content[@type="video/x-flv"]/@url');
+			self::$video->files['video/x-flv'] = $flv_url_query ? strval($flv_url_query[0]) : null;
+			
+			# MP4 file URL
+			$mp4_url_query = $xml->xpath('/rss/channel/item/media:group/media:content[@type="video/mp4"]/@url');
+			self::$video->files['video/mp4'] = $mp4_url_query ? preg_replace('#&amp;#', '&', $mp4_url_query[0]) : null;
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'imeem' :
+			
+			throw new Exception('Imeem is not yet supported.');
+			# Support thread opened here: http://www.imeem.com/groups/zJqqiqve/forums/-uuCzu0F/kx-e6b3U/method_searchbyurl/
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'metacafe' :
+			
+			# XML data URL
+			$file_data = "http://www.metacafe.com/api/item/".self::$id;
+			self::$video->xml_url = $file_data;
+			
+			# XML
+			$xml = new SimpleXMLElement(file_get_contents($file_data));
+			
+			# Title
+			$title_query = $xml->xpath('/rss/channel/item/title');
+			self::$video->title = $title_query ? strval($title_query[0]) : '';
+			
+			# Description
+			$description_query = $xml->xpath('/rss/channel/item/media:description');
+			self::$video->description = $description_query ? strval($description_query[0]) : '';
+			
+			# Tags
+			$tags_query = $xml->xpath('/rss/channel/item/media:keywords');
+			self::$video->tags = $tags_query ? explode(',', strval(trim($tags_query[0]))) : null;
+			
+			# Duration
+			self::$video->duration = null;
+			
+			# Author & author URL
+			$author_query = $xml->xpath('/rss/channel/item/author');
+			self::$video->author = $author_query ? strval($author_query[0]) : '';
+			self::$video->author_url = "http://www.metacafe.com/".self::$video->author;
+			
+			# Publication date
+			$date_published_query = $xml->xpath('/rss/channel/item/pubDate');
+			self::$video->date_published = $date_published_query ? new DateTime($date_published_query[0]) : null;
+			
+			# Last update date
+			self::$video->date_updated = null;
+			
+			# Thumbnails
+			$thumbnails_query = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
+			$thumbnail = new stdClass;
+			$thumbnail->url = strval($thumbnails_query[0]);
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			
+			# Player URL
+			$player_url_query = $xml->xpath('/rss/channel/item/media:content[@type="application/x-shockwave-flash"]/@url');
+			self::$video->player_url = $player_url_query ? strval($player_url_query[0]) : '';
+			
+			# Files URL
+			self::$video->files = array();
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'myspace' :
+			
+			# XML data URL
+			$file_data = "http://mediaservices.myspace.com/services/rss.ashx?type=video&videoID=".self::$id;
+			self::$video->xml_url = $file_data;
+			
+			# XML
+			$xml = new SimpleXMLElement(file_get_contents($file_data));
+			
+			# Title
+			$title_query = $xml->xpath('/rss/channel/item/title');
+			self::$video->title = $title_query ? strval($title_query[0]) : '';
+			
+			# Description
+			self::$video->description = null;
+			
+			# Tags
+			self::$video->tags = null;
+			
+			# Duration
+			self::$video->duration = null;
+			
+			# Author & author URL
+			self::$video->author = null;
+			self::$video->author_url = null;
+			
+			# Publication date
+			$date_published_query = $xml->xpath('/rss/channel/item/pubDate');
+			self::$video->date_published = $date_published_query ? new DateTime($date_published_query[0]) : null;
+			
+			# Last update date
+			self::$video->date_updated = null;
+			
+			# Thumbnails
+			$thumbnails_query = $xml->xpath('/rss/channel/item/media:thumbnail/@url');
+			$thumbnail = new stdClass;
+			$thumbnail->url = strval($thumbnails_query[0]);
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			
+			# Player URL
+			self::$video->player_url = "http://lads.myspace.com/videos/vplayer.swf?m=" . self::$id;
+			
+			# FLV file URL
+			$flv_url_query = $xml->xpath('/rss/channel/item/media:content[@type="video/x-flv"]/@url');
+			self::$video->files['video/x-flv'] = $flv_url_query ? strval($flv_url_query[0]) : null;
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'revver' :
+			
+			# Account check
+			# if (self::REVVER_LOGIN == '' || self::REVVER_PASSWORD == '') throw new Exception('Please specify your Revver account information.');
+			
+			throw new Exception('Revver is not yet supported.');
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'veoh' :
+			
+			# API key check
+			if (self::VEOH_API_KEY == '') throw new Exception('You need to request an API key in order to grab video information from Veoh.');
+			
+			# XML data URL
+			$file_data = "http://www.veoh.com/rest/v2/execute.xml?method=veoh.video.findByPermalink&permalink=" . self::$id . "&apiKey=" . self::VEOH_API_KEY;
+			self::$video->xml_url = $file_data;
+			
+			# XML
+			$xml = new SimpleXMLElement(file_get_contents($file_data));
+			
+			# Title
+			$title_query = $xml->xpath('/rsp/videoList/video/@title');
+			self::$video->title = $title_query ? strval($title_query[0]) : '';
+			
+			# Description
+			$description_query = $xml->xpath('/rsp/videoList/video/@description');
+			self::$video->description = $description_query ? strval($description_query[0]) : '';
+			
+			# Tags
+			$tags_query = $xml->xpath('/rsp/videoList/video/tagList/tag/@tagName');
+			foreach($tags_query as $tag) self::$video->tags[] = strval($tag[0]);
+			
+			# Duration
+			$duration_query = $xml->xpath('/rsp/videoList/video/@length');
+			$duration_raw = $duration_query ? strval($duration_query[0]) : null;
+			preg_match('#(([0-9]{0,2}) hr )?([0-9]{0,2}) min ([0-9]{0,2}) sec#', $duration_raw, $matches);
+			$hours = intval($matches[2]);
+			$minutes = intval($matches[3]);
+			$seconds = intval($matches[4]);
+			self::$video->duration = ($hours * 60 * 60) + ($minutes * 60) + $seconds;
+			
+			# Author & author URL
+			$author_query = $xml->xpath('/rsp/videoList/video/@username');
+			self::$video->author = $author_query ? strval($author_query[0]) : '';
+			self::$video->author_url = "http://www.veoh.com/users/".self::$video->author;
+			
+			# Publication date
+			$date_published_query = $xml->xpath('/rsp/videoList/video/@dateAdded');
+			self::$video->date_published = $date_published_query ? new DateTime($date_published_query[0]) : null;
+			
+			# Last update date
+			self::$video->date_updated = null;
+			
+			# Thumbnails
+			$thumbnails_query_medres = $xml->xpath('/rsp/videoList/video/@medResImage');
+			$thumbnail = new stdClass;
+			$thumbnail->url = strval($thumbnails_query_medres[0]);
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			$thumbnails_query_highres = $xml->xpath('/rsp/videoList/video/@highResImage');
+			$thumbnail = new stdClass;
+			$thumbnail->url = strval($thumbnails_query_highres[0]);
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			
+			# Player URL
+			self::$video->player_url = "http://www.veoh.com/veohplayer.swf?permalinkId=" . self::$id;
+
+			# FLV file URL
+			$flv_url_query = $xml->xpath('/rsp/videoList/video/@previewUrl');
+			self::$video->files['video/x-flv'] = $flv_url_query ? strval($flv_url_query[0]) : null;
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'viddler':
+			
+			# API key check
+			# if (self::VIDDLER_API_KEY == '') throw new Exception('You need to request an api key in order to grab video information from Viddler.');
+			
+			throw new Exception('Viddler is not yet supported.');
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'vimeo' :
+			
+			# PHP serialized data URL
+			$url_data = 'http://vimeo.com/api/clip/'.self::$id.'/php';
+			
+			# Data
+			$data = unserialize(file_get_contents($url_data));
+
+			# Title
+			self::$video->title = $data[0]['title'];
+
+			# Description
+			self::$video->description = $data[0]['caption'];
+
+			# Tags
+			self::$video->tags = explode(', ',$data[0]['tags']);
+
+			# Duration
+			self::$video->duration = $data[0]['duration'];
+
+			# Author & author URL
+			self::$video->author = $data[0]['user_name'];
+			self::$video->author_url = $data[0]['user_url'];
+
+			# Publication date
+			self::$video->date_published = new DateTime($data[0]['upload_date']);
+			
+			# Last update date
+			self::$video->date_updated = null;
+
+			# Thumbnails
+			$thumbnail = new stdClass;
+			$thumbnail->url = $data[0]['thumbnail_small'];
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			$thumbnail = new stdClass;
+			$thumbnail->url = $data[0]['thumbnail_medium'];
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+			$thumbnail = new stdClass;
+			$thumbnail->url = $data[0]['thumbnail_large'];
+			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
+			self::$video->thumbnails[] = $thumbnail;
+
+			# Player URL
+			self::$video->player_url = 'http://vimeo.com/moogaloop.swf?clip_id='.self::$id;
+			
+			# XML data URL
+			$file_data = 'http://www.vimeo.com/moogaloop/load/clip:'.self::$id;
+			self::$video->xml_url = 'http://vimeo.com/api/clip/'.self::$id.'/xml';
+			
+			# XML
+			$xml = new SimpleXMLElement(file_get_contents($file_data), LIBXML_NOCDATA);
+
+			# Files URL
+			self::$video->files = array();
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'sevenload' :
+			
+			# API key check
+			# if (self::SEVENLOAD_API_KEY == '') throw new Exception('You need to request an api key in order to grab video information from Sevenload');
+			
+			throw new Exception('Sevenload is not yet supported.');
+			
+			break;
+			
+			
+			# --------------------------------------------------------------------------------
+			case 'youtube' :
+			
+			# XML data URL
+			$file_data = 'http://gdata.youtube.com/feeds/api/videos/'.self::$id;
+			self::$video->xml_url = $file_data;
+			
+			# XML
+			$xml = new SimpleXMLElement(file_get_contents($file_data));
+			$xml->registerXPathNamespace('a', 'http://www.w3.org/2005/Atom');
+			$xml->registerXPathNamespace('media', 'http://search.yahoo.com/mrss/');
+			$xml->registerXPathNamespace('yt', 'http://gdata.youtube.com/schemas/2007');
+			
+			# Title
+			$title_query = $xml->xpath('/a:entry/a:title');
+			self::$video->title = $title_query ? strval($title_query[0]) : false;
+			
+			# Description
+			$description_query = $xml->xpath('/a:entry/a:content');
+			self::$video->description = $description_query ? strval(trim($description_query[0])) : false;
+			
+			# Tags
+			$tags_query = $xml->xpath('/a:entry/media:group/media:keywords');
+			self::$video->tags = $tags_query ? explode(', ',strval(trim($tags_query[0]))) : false;
+			
+			# Duration
+			$duration_query = $xml->xpath('/a:entry/media:group/yt:duration/@seconds');
+			self::$video->duration = $duration_query ? intval($duration_query[0]) : false;
+			
+			# Author & author URL
+			$author_query = $xml->xpath('/a:entry/a:author/a:name');
+			self::$video->author = $author_query ? strval($author_query[0]) : false;
+			self::$video->author_url = 'http://www.youtube.com/'.self::$video->author;
+			
+			# Publication date
+			$date_published_query = $xml->xpath('/a:entry/a:published');
+			self::$video->date_published = $date_published_query ? new DateTime($date_published_query[0]) : false;
+			
+			# Last update date
+			$date_updated_query = $xml->xpath('/a:entry/a:updated');
+			self::$video->date_updated = $date_updated_query ? new DateTime($date_updated_query[0]) : false;
+			
+			# Thumbnails
+			$thumbnail_query = $xml->xpath('/a:entry/media:group/media:thumbnail');
+			foreach ($thumbnail_query as $t) {
+				$thumbnail = new stdClass;
+				$thumbnail_query = $t->attributes();
+				$thumbnail->url = strval($thumbnail_query['url']);
+				$thumbnail->width = intval($thumbnail_query['width']);
+				$thumbnail->height = intval($thumbnail_query['height']);
+				self::$video->thumbnails[] = $thumbnail;
+			}
+			
+			# Player URL
+			self::$video->player_url = 'http://www.youtube.com/v/'.self::$id;
+
+			# Files URL
+			self::$video->files = array();
+			
+			# FLV file URL
+			// TODO: Récupération de l'URL du fichier flv
+			// self::$video->flv_url = 'http://www.youtube.com/get_video.php?video_id='.self::$id;
+			
+			break;
+			
+			# --------------------------------------------------------------------------------
+			default :
+			
+			throw new Exception('Unable to get the video data. Please make sure the service you’re trying to use is supported by Videopian.');
+			
+			break;
+			
+		}
+		
+		return self::$video;
+	}
+
+	# ================================================================================
+	# Build the query for Imeem API
+	# Documentation : http://www.imeem.com/developers/documentation/ws/wsoverview/wsappauth
+	private function buildImeemQuery($method, $param) {
+		
+		$base_url = 'http://www.api.imeem.com/api/xml/';
+		
+		switch($method) {
+			case 'mediaGetInfo':
+			$args = array(
+				'apiKey' => self::IMEEM_API_KEY,
+				'mediaIds' => $param,
+				'version' => '1.0'
+			);
+			break;
+			
+			case 'mediaSearch':
+			$args = array(
+				'apiKey' => self::IMEEM_API_KEY,
+				'mediaType' => 'video',
+				'query' => $param,
+				'version' => '1.0'
+			);
+			break;
+		}
+		
+		$httpquery = http_build_query($args);
+		
+		$sig = md5($method . preg_replace('#&amp;#', '', $httpquery) . self::IMEEM_API_SECRET);
+		$query = $base_url . $method . '?' . $httpquery . '&amp;sig=' . $sig;
+		
+		return $query;
+	}
+}
+?>
