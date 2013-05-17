@@ -585,10 +585,11 @@ class Videopian {
 			case 'vimeo' :
 			
 			# PHP serialized data URL
-			$url_data = 'http://vimeo.com/api/clip/'.self::$id.'/php';
-			
+			// $url_data = 'http://vimeo.com/api/clip/'.self::$id.'/php';
+
+			$url_data = 'http://vimeo.com/api/v2/video/'.self::$id.'.php';
 			# Data
-			$data = unserialize(file_get_contents($url_data));
+			$data = unserialize(@file_get_contents($url_data));    // erational: ajout @ (cas trop requete genre deni de service)
 
 			# Title
 			self::$video->title = $data[0]['title'];
@@ -614,7 +615,13 @@ class Videopian {
 
 			# Thumbnails
 			$thumbnail = new stdClass;
-			$thumbnail->url = $data[0]['thumbnail_small'];
+			$thumbnail->url = $data[0]['thumbnail_small'];      
+      // erational  : securite si appel trop court 
+      if ($thumbnail->url=="") {
+          throw new Exception('Pas de vignette - API fatigue');
+			
+			    break;
+      }  // #erational       
 			list($thumbnail->width, $thumbnail->height) = getimagesize($thumbnail->url);
 			self::$video->thumbnails[] = $thumbnail;
 			$thumbnail = new stdClass;
@@ -629,12 +636,14 @@ class Videopian {
 			# Player URL
 			self::$video->player_url = 'http://vimeo.com/moogaloop.swf?clip_id='.self::$id;
 			
+			/* stephc : début
 			# XML data URL
 			$file_data = 'http://www.vimeo.com/moogaloop/load/clip:'.self::$id;
 			self::$video->xml_url = 'http://vimeo.com/api/clip/'.self::$id.'/xml';
 			
 			# XML
 			$xml = new SimpleXMLElement(file_get_contents($file_data), LIBXML_NOCDATA);
+			// stephc: fin */
 
 			# Files URL
 			self::$video->files = array();
@@ -661,7 +670,7 @@ class Videopian {
 			self::$video->xml_url = $file_data;
 			
 			# XML
-			$xml = new SimpleXMLElement(file_get_contents($file_data));
+			$xml = new SimpleXMLElement(@file_get_contents($file_data));     // erational: ajout @ (cas trop requete genre deni de service)
 			$xml->registerXPathNamespace('a', 'http://www.w3.org/2005/Atom');
 			$xml->registerXPathNamespace('media', 'http://search.yahoo.com/mrss/');
 			$xml->registerXPathNamespace('yt', 'http://gdata.youtube.com/schemas/2007');
