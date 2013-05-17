@@ -1,0 +1,254 @@
+/********************************************
+*  feuille style  wp remixthecommons
+*  
+*  
+*
+*  date:    2013.05.17 
+*  author:  erational.org
+*  version: 1.5
+*****************************************/
+
+/* 1. BASE
+==============================================================================*/
+
+
+/* 1.0 fonts
+------------------------------------------------------------------------------*/
+
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.com */ 
+@font-face{ font-family: 'museo'; 
+            src: url('museo-300.eot'); 
+            src: url('museo-300.eot?#iefix') format('embedded-opentype'),
+                 url('museo-300.woff') format('woff'),
+                 url('museo-300.ttf') format('truetype'),
+                 url('museo-300.svg#webfont') format('svg'); 
+}
+
+/* A font by Jos Buivenga (exljbris) -> www.exljbris.com */ 
+@font-face{ font-family: 'museobold'; 
+            src: url('museo-700.eot'); 
+            src: url('museo-700.eot?#iefix') format('embedded-opentype'),
+                 url('museo-700.woff') format('woff'),
+                 url('museo-700.ttf') format('truetype'),
+                 url('museo-700.svg#webfont') format('svg'); 
+}
+
+
+
+
+
+/* 1.1 Tags & Reset --> bootstrap
+------------------------------------------------------------------------------*/
+
+body {  font-family: 'museo',Arial,sans-serif;} 
+input, button, select, textarea {  font-family: 'museo',Helvetica,Arial,sans-serif; } /* surcharge bootstrap pour eviter le 'Helvetica Neue' */
+
+h1,h2,h3,h4,h5,h6 {font-family: 'museobold',Arial,sans-serif;color:#6eac75;}
+h1 {font-size:32px;}
+h2 {font-size:23px;}
+h3 {font-size:22px;}
+
+.debug-layout {display:none;}  
+/*
+.row {background:#eee;}
+.span1,.span2,.span3,.span4,
+.span5,.span6,.span7,.span8,
+.span9,.span10,.span11,.span12 {background:pink;} 
+*/
+a {color:#1c9db6;}
+a:hover {color:#146473;}
+
+/* 2. COMMUNS
+==============================================================================*/
+.invisible {display:none;}
+.clear {clear:both;}
+
+/* 2.1 nav
+------------------------------------------------------------------------------*/
+.menu ul {list-style:none;margin:0;padding:0;}
+.menu a {font-family: 'museobold',Arial,sans-serif;
+         display:block;float:left;padding:10px;margin:10px 0 0 0;
+         font-size:20px;color:#666;text-decoration:none;
+         line-height:60px;height:60px;
+}
+.menu a.first {padding-left:0;}
+.menu a.active {color:#1c9db6;}
+.menu a:hover {color:#1c9db6;}
+
+.search {margin:35px 0 0 0;}
+.search form {float:right;margin:0;}
+.search input {background-color:#efefef;font-size:14px;}
+
+
+/* 2.2 social
+------------------------------------------------------------------------------*/
+.social ul {list-style:none;margin:0;padding:0;height:65px;}
+.social a {display:block;width:65px;height:65px;
+           float:left; margin-right:10px;
+           background:transparent url(../img/but_social.png);
+}
+
+.social .facebook a {background-position:-77px 0;}
+.social .googleplus a {background-position:-157px 0;margin-right:0;}
+.social .twitter:hover a {background-position:0 -66px;}
+.social .facebook:hover a {background-position:-77px -66px;}
+.social .googleplus:hover a {background-position:-157px -66px;}
+
+.page .social {float:right;}
+
+/* 2.3 pagination
+------------------------------------------------------------------------------*/
+.navigation {clear:both;padding:1.5em 0;}
+.alignright {float:right;}
+.alignleft {float:left;}
+
+.navigation .alignright,
+.navigation .alignleft {border-top:4px solid #eee;padding-top:10px;}
+.item {border-top:1px dotted #666;margin-top:2em;}
+.date {color:#999;font-size:11px;padding-top:1em;font-family:verdana,sans-serif;}
+
+
+
+/* 2.99 footer
+------------------------------------------------------------------------------*/
+.footer {margin-top:10px;border-top:1px solid #e7e7e7;padding:10px 0;color:#666;}
+.footer a {color:#000;margin-left:10px;}
+.footer span {color:#1c9db6;font-family: 'museobold',Arial,sans-serif;}
+
+
+/* 3. ACCUEIL - HOME
+==============================================================================*/
+
+
+/* 3.7 baseline
+------------------------------------------------------------------------------*/
+.baseline {
+        background:#f2f2f2;
+        border-top:2px solid #cdcdcd;
+        border-bottom:2px solid #cdcdcd;
+        padding-bottom:50px;
+}
+.baseline strong {font-family: 'museobold',Arial,sans-serif;color:#6eac75;}
+.baseline p {font-size:20px;line-height:140%;margin-top:35px;}
+.baseline a {font-family: 'museobold',Arial,sans-serif;}
+
+
+.row-lang {text-align:right;}
+.row-lang div {float:right;width:230px; margin-top:5px;}
+
+ul.nav-lang  {list-style:none;margin:0;padding:0;}
+.nav-lang a {font-family: 'museobold',Arial,sans-serif;
+         display:block;float:left;padding:5px;margin-left:25px;
+         font-size:18px;color:#999;text-decoration:none;
+}
+
+.nav-lang a.active,.nav-lang a.active:hover {color:#000;cursor:default;}
+.nav-lang a:hover {color:#1c9db6;}
+
+
+/* 3.7 tags
+------------------------------------------------------------------------------*/
+.tags {margin-bottom:30px;}
+.tag-title {font-family: 'museobold',Arial,sans-serif;letter-spacing:1px;font-size:16px;}
+.tag-title li {background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 27%,rgba(0,0,0,0.13) 97%,rgba(0,0,0,0.13) 100%);}
+
+.tag-index ul {list-style:none;margin:0;padding:0;}
+
+
+
+/* 3.8 home_last
+------------------------------------------------------------------------------*/
+.item_media {margin-bottom:20px;position:relative;background:#666;height:225px;overflow:hidden;}              
+
+.legend {display:block;background:#000;
+         color:#fff;padding:10px;opacity:0.6;
+         position:absolute;top:150px;/*width:350px;*/
+         /*margin-top:-120px;*/
+}
+.item_media:hover {  }
+.item_media:hover .legend {opacity:0.85;}
+
+.item_media .wrapper {display:none;} /* effet papillon */
+
+/* 3.9 home_more
+------------------------------------------------------------------------------*/
+.newsletter input {background-color:#efefef;}
+
+/* 3.10 home_news
+------------------------------------------------------------------------------*/
+.home_news {background:#f2f2f2;padding:20px;
+            box-shadow: 5px 5px 4px #ddd;}
+.home_news h3 {color:#000;font-size:16px;margin:0;line-height:140%}
+.home_news a {color:#6a6a6a;}
+.home_news a:hover {color:#000;text-decoration:none;}
+.news {margin-top:15px;}
+.register {margin-bottom:25px;}
+
+
+/* 3.10 partner
+------------------------------------------------------------------------------*/
+.partner {margin-top:20px;}
+.partner div {height:100px;line-height:100px;}
+.partner img {vertical-align:middle;}
+.partner img:hover {opacity:0.6;}
+
+
+/* 4. PAGE COURANTE
+==============================================================================*/
+.sidebar {padding-top:65px;}
+.sidebar h2 {font-size:20px;margin:0;}
+
+.chapter {margin-bottom:2em;}
+.chapter ul {list-style:none;margin:0;border-top:1px solid #e7e7e7;}
+.chapter a {text-decoration:none;display:block;padding:8px 5px;
+            border-bottom:1px solid #e7e7e7;color:#666;
+}
+.chapter a.active {background:#ededed;}
+.chapter a:hover {background:#ededed;}
+
+.sidebar .tags ul {list-style:none;margin:0;padding:10px;border:4px solid #e7e7e7; }
+.sidebar .tags a {text-decoration:none;display:block;}
+.sidebar .meta {padding:10px;background:#ededed;}
+.sidebar .meta div {margin-bottom:0.5em;}
+.sidebar .meta span {color:#999;display:block;}
+
+.doc-right {float:right;margin:5px;}
+
+/* 5. FICHE
+==============================================================================*/
+.meta_extra {display:none;font-size:12px;margin:10px 0;padding:8px;/*border:1px dotted #333;*/background:#f5f5f5;}
+.small_extra {font-size:12px;margin-bottom:0.5em;line-height:120%;}
+.small_extra_first {margin:20px 0 0 0;padding-top:8px;border-top:1px dotted #666;}
+.small_extra_last {margin:0 0 20px 0;padding-bottom:8px;border-bottom:1px dotted #666;}
+.sidebar .small_extra span {color:#999;display:inline;}
+
+/* 6. RESPONSIVE
+==============================================================================*/
+
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) { 
+
+    
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) { 
+
+      /* fix static width; */
+      .row-lang div  {width:100%}
+      .partner div {height:auto;line-height:normal;}
+      .partner img {margin:5px 0;}
+      .menu a.active, .nav-lang .active {display:none;}
+      .menu a {float:none;margin:10px 0;padding:0;
+               line-height:normal;height:auto; 
+      }
+      .nav-lang a {font-size:16px;margin-left:5px;}
+      .baseline p {font-size:18px;}
+      
+      .item_media {margin-bottom:10px;min-height:auto;}
+      
+      /* interline */
+      h1, h2, h3 {line-height:120%;}
+      
+}
