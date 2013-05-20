@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: remixcommons\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-17 09:23+0900\n"
+"POT-Creation-Date: 2013-05-17 22:07+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -31,38 +31,54 @@ msgstr ""
 "Désolé, aucune page disponible à cet endroit. Le moteur de recherche peut "
 "peut-être vous aider."
 
-#: ../archive.php:26
-msgid "Posts Tagged &#8216;"
-msgstr "Billets tagués &#8216"
+#: ../archive.php:46 ../archive.php:183
+msgid "Enjeux  &#8216;"
+msgstr "Enjeux  &#8216;"
 
-#: ../archive.php:28 ../archive.php:30 ../archive.php:32
+#: ../archive.php:56 ../search.php:87
+msgid "Projets"
+msgstr "Projets"
+
+#: ../archive.php:84 ../home.php:40 ../search.php:137
+msgid "Latest medias"
+msgstr "Derniers médias"
+
+#: ../archive.php:109 ../home.php:200 ../search.php:162
+msgid "Latest news"
+msgstr "Dernières actualités"
+
+#: ../archive.php:185
+msgid "Biens commons &#8216;"
+msgstr "Biens commons &#8216;"
+
+#: ../archive.php:187 ../archive.php:189 ../archive.php:191
 msgid "Archive for"
 msgstr "Archive pour "
 
-#: ../archive.php:34
+#: ../archive.php:193
 msgid "Author Archive"
 msgstr "Archive de l'auteur"
 
-#: ../archive.php:36
+#: ../archive.php:195
 msgid "Blog Archives"
 msgstr "Archives du blog"
 
 # @ branfordmagazine
-#: ../archive.php:56
+#: ../archive.php:214
 msgid "Previous entries"
 msgstr "Articles précédents"
 
 # @ branfordmagazine
-#: ../archive.php:57
+#: ../archive.php:215
 msgid "Next entries"
 msgstr "Articles suivants"
 
-#: ../archive.php:63 ../mediarama.php:99 ../single-fiche.php:62
+#: ../archive.php:221 ../mediarama.php:99 ../single-fiche.php:62
 #: ../single.php:102
 msgid "Not Found"
 msgstr "Non trouvé"
 
-#: ../archive.php:64 ../mediarama.php:100 ../single-fiche.php:63
+#: ../archive.php:222 ../mediarama.php:100 ../single-fiche.php:63
 #: ../single.php:103
 msgid "Sorry, but you are looking for something that isn't here."
 msgstr "Désolé, mais vous cherchez quelque chose qui n'est pas ici."
@@ -83,10 +99,6 @@ msgstr "Rechercher des médias"
 #: ../home.php:26
 msgid "Read more"
 msgstr "Lire la suite"
-
-#: ../home.php:40
-msgid "Latest medias"
-msgstr "Derniers médias"
 
 #: ../home.php:81
 msgid "More medias"
@@ -115,10 +127,6 @@ msgstr "Devenir contributeur"
 #: ../home.php:188
 msgid "Register"
 msgstr "S'inscrire"
-
-#: ../home.php:202
-msgid "Latest news"
-msgstr "Dernières actualités"
 
 #: ../inc_sidebar_post.php:94
 msgid "Type de document"
@@ -170,20 +178,20 @@ msgid "Newsletter unsub nok"
 msgstr "Erreur, votre email n'est pas valide."
 
 # @ branfordmagazine
-#: ../search.php:33
+#: ../search.php:40
 msgid "Search Results for"
 msgstr "Résultats de la recherche"
 
 # @ branfordmagazine
-#: ../search.php:65
+#: ../search.php:183
 msgid "Not Found. Try a different search."
 msgstr "Aucun article trouvé, essayer d'autres critères de recherche."
 
-#: ../searchform.php:3
+#: ../searchform.php:8
 msgid "Search"
 msgstr "Rechercher"
 
-#: ../searchform.php:7
+#: ../searchform.php:14
 msgid "Recherche avancee"
 msgstr "Recherche avancée"
 
@@ -198,3 +206,6 @@ msgstr "d M Y"
 #: ../single.php:73
 msgid "Les fiches de ce projet"
 msgstr "Les fiches de ce projet"
+
+#~ msgid "Posts Tagged &#8216;"
+#~ msgstr "Billets tagués &#8216"

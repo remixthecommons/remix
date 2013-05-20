@@ -148,7 +148,7 @@ Template Name: Home
                                              }                                               
                                            }                                             
                                            echo "</ul></div>";                                        
-                                      }                                   
+                                     }                                   
                                    ?>
                               </div>
 
@@ -187,8 +187,6 @@ Template Name: Home
                      <h2><?php _e("Devenir contributeur","sakura"); ?></h2>
                      <a class="btn btn-large btn-info" type="button" href="/wp-login.php"><?php _e("Register","sakura"); ?></a>
                 </div>
-                
-                
                 
                 
                 <?php get_template_part('inc_social');  ?>

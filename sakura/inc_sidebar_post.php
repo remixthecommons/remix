@@ -53,7 +53,7 @@ if ($post_type == "projet") {
                                               <ul>                                           
                                            <?php                                                                                
                                            foreach ( $terms as $term ) {                                              
-                                             echo "<li><a href='hess-type/".$term->slug."'>" . $term->name . "</a></li>";                                                                                           
+                                             echo "<li><a href='".get_bloginfo('siteurl')."/hess-type/".$term->slug."'>" . $term->name . "</a></li>";                                                                                           
                                            }
                                            ?>
                                            </ul>
@@ -146,7 +146,7 @@ if ($post_type == "projet") {
                                               <ul>                                           
                                            <?php                                                                                
                                            foreach ( $terms as $term ) {                                              
-                                             echo "<li><a href='hess-type/".$term->slug."'>" . $term->name . "</a></li>";                                                                                           
+                                             echo "<li><a href='".get_bloginfo('siteurl')."/hess-type/".$term->slug."'>" . $term->name . "</a></li>";                                                                                           
                                            }
                                            ?>
                                            </ul>

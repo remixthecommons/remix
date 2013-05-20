@@ -10,14 +10,17 @@
                          // debug
                          // echo "<br>id (contexte).... ".get_the_ID()."<br >";
                   endwhile; else:
-                   endif;  
+                  endif;  
                   
                  if (is_category()) { 
                       // sidebar category : a priori pas utilise  ?>
                       <?php get_template_part('inc_sidebar_category');  ?>
                   <?php } elseif( is_tag() ) { 
                       // sidebar tag  ?>
-                     <?php get_template_part('inc_sidebar_tag');  ?>
+                      <?php get_template_part('inc_sidebar_tag');  ?>
+                  <?php } elseif( is_tax() ) { 
+                      // sidebar taxo  ?>                      
+                      <?php get_template_part('inc_sidebar_taxo');  ?>
                   <?php } elseif( is_single() ) { 
                       // sidebar post  ?>
                       <?php get_template_part('inc_sidebar_post'); ?>

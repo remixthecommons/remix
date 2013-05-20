@@ -77,7 +77,7 @@ a:hover {color:#146473;}
 
 .search {margin:35px 0 0 0;}
 .search form {float:right;margin:0;}
-.search input {background-color:#efefef;font-size:14px;}
+.search input {background-color:#efefef;font-size:12px;}
 
 
 /* 2.2 social
@@ -205,6 +205,9 @@ ul.nav-lang  {list-style:none;margin:0;padding:0;}
 }
 .chapter a.active {background:#ededed;}
 .chapter a:hover {background:#ededed;}
+.chapter ul ul a {padding:4px 5px;font-size:90%;background:#fafafa;}
+.chapter ul ul a:hover {background:#ededed;}
+.chapter ul ul a.active {background:#fafafa;font-weight:bold;}
 
 .sidebar .tags ul {list-style:none;margin:0;padding:10px;border:4px solid #e7e7e7; }
 .sidebar .tags a {text-decoration:none;display:block;}
@@ -224,13 +227,18 @@ ul.nav-lang  {list-style:none;margin:0;padding:0;}
 
 /* 6. RESPONSIVE
 ==============================================================================*/
+/* Large desktop */
+@media (min-width: 1200px) { 
+    .search input {font-size:14px;}
+}
+ 
+/* Portrait tablet to landscape and desktop */
+@media (max-width: 979px) {      
+}
 
 
 /* Landscape phone to portrait tablet */
-@media (max-width: 767px) { 
-
-    
-}
+@media (max-width: 767px) {}
 
 /* Landscape phones and down */
 @media (max-width: 480px) { 
